@@ -209,16 +209,17 @@ body { font-family: 'Noto Sans JP', sans-serif; background: #edf1f7; color: #1e2
   border-collapse: collapse;
   margin: 8px 0 12px 14px;
   font-size: 12px;
-  max-width: 500px;
 }
 .eval-table th, .eval-table td {
   border: 1px solid #cbd5e1;
   padding: 5px 12px;
-  text-align: center;
+  text-align: left;
+  white-space: nowrap;
 }
 .eval-table th { background: #e8edf5; font-weight: 600; color: #334155; }
-.eval-table td:first-child { font-weight: 600; }
-.eval-table td:last-child { text-align: left; }
+.eval-table td:first-child { font-weight: 600; text-align: center; }
+.eval-table td:nth-child(2) { text-align: center; }
+.eval-table td:nth-child(3) { text-align: center; }
 
 .footer {
   text-align: center;
