@@ -398,16 +398,34 @@ async function sha256(text) {
   return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30分
+
 function unlock() {
   document.getElementById('authOverlay').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
-  sessionStorage.setItem('report_auth', '1');
+  sessionStorage.setItem('report_auth', Date.now().toString());
 }
 
-// Check if already authenticated this session
-if (sessionStorage.getItem('report_auth') === '1') {
+function isSessionValid() {
+  const ts = sessionStorage.getItem('report_auth');
+  if (!ts) return false;
+  return (Date.now() - parseInt(ts)) < SESSION_TIMEOUT;
+}
+
+// Check if already authenticated and within time limit
+if (isSessionValid()) {
   unlock();
 }
+
+// Auto-logout when session expires
+setInterval(() => {
+  if (document.getElementById('mainContent').style.display === 'block' && !isSessionValid()) {
+    sessionStorage.removeItem('report_auth');
+    document.getElementById('authOverlay').style.display = 'flex';
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('authError').textContent = 'セッションの有効期限が切れました';
+  }
+}, 60000); // 1分ごとにチェック
 
 document.getElementById('authForm').addEventListener('submit', async function(e) {
   e.preventDefault();
